@@ -1,4 +1,4 @@
 true: syntax(camlp4o)
-true: package(core,sexplib,sexplib.syntax,str,kaputt)
+true: package(core,sexplib,sexplib.syntax,str,kaputt,textutils)
 true: thread,debug
 <src> or <tests>: include

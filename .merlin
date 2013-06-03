@@ -1,6 +1,7 @@
 PKG core 
 PKG sexplib
 PKG kaputt
+PKG textutils
 S src
 S tests
 B _build/src
