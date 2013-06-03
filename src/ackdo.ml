@@ -8,8 +8,8 @@ let command =
       +> flag "-d" (no_arg)
           ~doc:" Write changes. Mnemonic: d => do"
       +> flag "-w" (optional_with_default (Unix.getcwd ()) string)
-          ~doc:"directory Set the directory to lookup the files in the change set
-                The default is cwd"
+          ~doc:"directory Set the directory to lookup the files in the change
+          set The default is cwd"
       +> flag "-c" (no_arg)
           ~doc:" Turn off color output"
     ) (fun commit dir color () -> 
