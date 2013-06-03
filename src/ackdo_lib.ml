@@ -35,6 +35,8 @@ module E = struct
   let does_not_exist ~dir ~file = raise (Does_not_exist (dir, file))
 end
 
+(* Grouped inuput is not used very often so it's not currently supported *)
+
 let detect_input input = Ungrouped (* TODO *)
 
 let input_grouped input = failwith "TODO"

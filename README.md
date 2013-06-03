@@ -44,6 +44,14 @@ TODO : document everything else
 
 Use at your own peril. Ackdo comes with absolutely no warranty.
 
+
+### TODO
+
+- create patch files
+- colored diff of lines
+- support more formatting options
+- cleaner error handling
+
 ### License
 
 MIT
