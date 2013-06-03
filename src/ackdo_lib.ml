@@ -25,18 +25,14 @@ module E = struct
   exception Does_not_exist of string * string with sexp
   exception Invalid_change of string with sexp
 
-  let wrong_exception function_name =
-    raise (Invalid_argument (function_name ^ ", wrong exception"))
-
-  let dne_to_string = function
+  let to_string = function
     | Does_not_exist (dir, path) ->
       sprintf "Could not find %s in %s. Maybe -w is set wrong?" path dir
-    | _ -> wrong_exception "dne_to_string"
+    | Invalid_change line -> sprintf "Bad line: '%s'" line
+    | _exn -> failwiths "Wrong exn" _exn sexp_of_exn
 
   let invalid_change line = raise (Invalid_change line)
-  let invalid_change_to_string = function
-    | Invalid_change line -> sprintf "Bad line: '%s'" line
-    | _ -> wrong_exception "invalid_change_to_string"
+  let does_not_exist ~dir ~file = raise (Does_not_exist (dir, file))
 end
 
 let detect_input input = Ungrouped (* TODO *)
@@ -102,7 +98,7 @@ let parse_changes ~dir input =
   inputs |> List.map ~f:(fun input ->
       let path = Filename.concat dir input.file in
       match Sys.file_exists path with
-      | `No -> raise (E.Does_not_exist (dir, input.file))
+      | `No -> E.does_not_exist ~dir ~file:input.file
       | `Yes | `Unknown -> change_set_of_input {input with file=path}
     )
 
