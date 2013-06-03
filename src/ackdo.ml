@@ -13,9 +13,9 @@ let command =
       +> flag "-c" (no_arg)
           ~doc:" Turn off color output"
     ) (fun commit dir color () -> 
-        let input = ["testing"] in
+        let input = In_channel.(input_lines stdin) in
         let change_sets = Ackdo_lib.parse_changes ~dir input in
-        if commit then change_sets |> List.iter ~f:Ackdo_lib.write_changes
+        if commit then Ackdo_lib.write_changes change_sets
         else Ackdo_lib.preview_changes change_sets ~color:(not color)
       )
 
