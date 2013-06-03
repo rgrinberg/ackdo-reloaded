@@ -1,4 +1,5 @@
 open Core.Std
+open Textutils.Std
 
 type input = {
   file : string;
@@ -115,9 +116,13 @@ module Printers = struct
       printf "+ %s\n" new_line
   end
   let color = object
-    method no_changes _ = failwith "TODO"
-    method fname _ = failwith "TODO"
-    method diff ~old_line ~new_line = failwith "TODO"
+    method no_changes = no_color#no_changes
+    method fname f = Console.Ansi.printf [`Green] "%s\n" f
+    method diff ~old_line ~new_line = 
+      Console.Ansi.printf [`Red] "- ";
+      print_endline old_line;
+      Console.Ansi.printf [`Yellow] "+ ";
+      print_endline new_line
   end
   let _c = color 
   let get_printer ~color = if color then _c else no_color
