@@ -125,7 +125,7 @@ module Printers = struct
 end
 
 
-let preview_changes change_sets ~color = (* TODO color not supported *)
+let preview_changes change_sets ~color =
   let printer = Printers.get_printer ~color in
   change_sets |> List.iter ~f:(fun {path; changes} ->
       if List.is_empty changes then printer#no_changes path
