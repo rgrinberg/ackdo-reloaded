@@ -1,3 +1,5 @@
+bin=/usr/local/bin
+
 build:
 	ocamlbuild -use-ocamlfind src/ackdo.native
 
@@ -6,10 +8,16 @@ tests:
 	./tests.native
 
 install:
-	echo "install"
+	cp ackdo.native $(bin)/ackdo
 
 uninstall:
-	echo "uninstall"
+	rm -f $(bin)/ackdo
+
+opaminstall:
+	cp ackdo.native `ocamlc -where`/ackdo
+
+opamuninstall:
+	rm -f ackdo.native `ocamlc -where`/ackdo
 
 clean:
 	ocamlbuild -clean
