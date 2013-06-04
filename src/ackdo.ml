@@ -1,8 +1,12 @@
 open Core.Std
 
+let readme () = "Exmaple:
+ack -w input | sed 's/in/out/g' | ackdo # previews changes
+ack -w input | sed 's/in/out/g' | ackdo -d # writes changes"
+
 let command =
   Command.basic
-    ~summary:"Ackdo - ack + sed companion"
+    ~summary:"Ackdo - ack + sed companion" ~readme
     Command.Spec.(
       empty
       +> flag "-d" (no_arg)
