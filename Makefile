@@ -22,4 +22,4 @@ opamuninstall:
 clean:
 	ocamlbuild -clean
 
-.PHONY: build tests install uninstall clean all
+.PHONY: build tests install uninstall clean
