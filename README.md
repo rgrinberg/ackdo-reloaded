@@ -38,6 +38,9 @@ If you are happy with these changes you can write them with:
 $ ack -w 'foo_bar' | sed 's/foo_bar/fooBar/' | ackdo -d
 ```
 
+- `-c` flag to turn off color output
+- `-d dir` to overwrite the root directory (base is cwd)
+
 TODO : document everything else
 
 ### Disclaimer
