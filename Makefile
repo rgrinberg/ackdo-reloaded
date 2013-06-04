@@ -1,5 +1,9 @@
 bin=/usr/local/bin
 
+PREFIX ?= $(shell dirname $(shell dirname `ocamlc -where`))
+
+BINDIR ?= $(PREFIX)/bin
+
 build:
 	ocamlbuild -use-ocamlfind src/ackdo.native
 
@@ -11,13 +15,13 @@ install:
 	cp ackdo.native $(bin)/ackdo
 
 uninstall:
-	rm -f $(bin)/ackdo
+	rm -f $(BINDIR)/ackdo
 
 opaminstall:
-	cp ackdo.native `ocamlc -where`/ackdo
+	cp ackdo.native $(BINDIR)/ackdo
 
 opamuninstall:
-	rm -f ackdo.native `ocamlc -where`/ackdo
+	rm -f ackdo.native $(BINDIR)/ackdo
 
 clean:
 	ocamlbuild -clean
