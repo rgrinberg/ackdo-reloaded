@@ -19,6 +19,10 @@ type input_type =
   | Grouped
   | Ungrouped with sexp
 
+module E : sig
+  val handle_exn : exn -> unit
+end
+
 val get_lines : path : string -> int list -> string list
 
 val change_set_of_input : input -> change_set

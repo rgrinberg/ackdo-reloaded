@@ -27,12 +27,17 @@ module E = struct
 
   let to_string = function
     | Does_not_exist (dir, path) ->
-      sprintf "Could not find %s in %s. Maybe -w is set wrong?" path dir
-    | Invalid_change line -> sprintf "Bad line: '%s'" line
-    | _exn -> failwiths "Wrong exn" _exn sexp_of_exn
+      Some (sprintf "Could not find %s in %s. Maybe -w is set wrong?" path dir)
+    | Invalid_change line -> Some (sprintf "Bad line: '%s'" line)
+    | _exn -> None
 
   let invalid_change line = raise (Invalid_change line)
   let does_not_exist ~dir ~file = raise (Does_not_exist (dir, file))
+
+  let handle_exn _exn = 
+    match to_string _exn with
+    | None -> failwiths "Wrong exn" _exn sexp_of_exn
+    | Some s -> printf "Error: %s\n" s
 end
 
 (* Grouped inuput is not used very often so it's not currently supported *)
