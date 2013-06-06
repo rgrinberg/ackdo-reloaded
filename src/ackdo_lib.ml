@@ -135,11 +135,11 @@ module Diff = struct
     in String.of_char_list (reco [] n m)
 
   let split_lcs str lcs = 
-    let len = String.length str in
+    let (len, lcs_len) = String.(length str, length lcs) in
     let marked = Array.create ~len (`no_lcs '_') in
     let lcs_pos = ref 0 in
     for i = 0 to len - 1 do
-      if str.[i] = lcs.[!lcs_pos] then
+      if (!lcs_pos < lcs_len) && (str.[i] = lcs.[!lcs_pos]) then
         begin
           marked.(i) <- `lcs (str.[i]);
           incr lcs_pos
