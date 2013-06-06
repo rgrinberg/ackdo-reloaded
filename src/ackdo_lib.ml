@@ -56,7 +56,7 @@ let parse_change line =
   | line::rest ->
     object
       method line = Int.of_string line
-      method new_line = String.concat rest
+      method new_line = String.concat ~sep:":" rest
     end
   | [] -> E.invalid_change line
 
