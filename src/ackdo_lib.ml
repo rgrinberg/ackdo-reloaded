@@ -109,6 +109,61 @@ let parse_changes ~dir input =
       | `Yes | `Unknown -> change_set_of_input {input with file=path}
     )
 
+module Diff = struct
+  let longest_common_subsequence x y =
+    let (n, m) = String.(length x, length y) in
+    let tbl = Array.init (n+1) (fun _ -> Array.create ~len:(m+1) 0) in
+    for i = 0 to n do tbl.(i).(0) <- 0 done;
+    for i = 0 to m do tbl.(0).(i) <- 0 done;
+    for i = 1 to n do
+      for j = 1 to m do
+        if x.[i-1] = y.[j-1] then
+          tbl.(i).(j) <- tbl.(i-1).(j-1) + 1
+        else
+          tbl.(i).(j) <- max tbl.(i-1).(j) tbl.(i).(j-1)
+      done
+    done;
+    let rec reco acc i j = 
+      if i = 0 || j = 0 then
+        acc
+      else if x.[i-1] = y.[j-1] then
+        reco ((x.[i-1])::acc) (i-1) (j-1)
+      else if tbl.(i-1).(j) > tbl.(i).(j-1) then
+        reco acc (i-1) j
+      else
+        reco acc i (j-1)
+    in String.of_char_list (reco [] n m)
+
+  let split_lcs str lcs = 
+    let len = String.length str in
+    let marked = Array.create ~len (`no_lcs '_') in
+    let lcs_pos = ref 0 in
+    for i = 0 to len - 1 do
+      if str.[i] = lcs.[!lcs_pos] then
+        begin
+          marked.(i) <- `lcs (str.[i]);
+          incr lcs_pos
+        end
+      else marked.(i) <- `no_lcs (str.[i])
+    done;
+    assert ((String.length lcs) = !lcs_pos);
+    let untag = function | `lcs x | `no_lcs x -> x in
+    let extract word = word |> List.map ~f:untag |> String.of_char_list in
+    marked |> Array.to_list
+    |> List.group ~break:(fun x y -> match x, y with
+        | `lcs _ , `lcs _ | `no_lcs _ , `no_lcs _ -> false
+        | _, _ -> true)
+    |> List.map ~f:(fun word ->
+        match List.hd_exn word with
+        | `lcs _ -> `lcs (extract word)
+        | `no_lcs _ -> `no_lcs (extract word))
+
+  let diff s1 s2 = 
+    let lcs = longest_common_subsequence s1 s2 in
+    (split_lcs s1 lcs, split_lcs s2 lcs)
+
+end
+
 
 module Printers = struct
   let no_color = object
@@ -118,14 +173,24 @@ module Printers = struct
       printf "- %s\n" old_line;
       printf "+ %s\n" new_line
   end
-  let color = object
+  let color = object(self)
     method no_changes = no_color#no_changes
     method fname f = Console.Ansi.printf [`Green] "%s\n" f
+
+    method private print_line attrs diffed_line = 
+      diffed_line |> List.iter ~f:(function
+          | `lcs s -> print_string s
+          | `no_lcs s -> Console.Ansi.printf attrs "%s" s)
+
     method diff ~old_line ~new_line = 
-      Console.Ansi.printf [`Red] "- ";
-      print_endline old_line;
-      Console.Ansi.printf [`Yellow] "+ ";
-      print_endline new_line
+      let no_lcs_color = [`Red] in
+      let (d1, d2) = Diff.diff old_line new_line in
+      print_string "- ";
+      self#print_line no_lcs_color d1;
+      print_string "\n+ ";
+      self#print_line no_lcs_color d2;
+      print_newline ()
+
   end
   let _c = color 
   let get_printer ~color = if color then _c else no_color
