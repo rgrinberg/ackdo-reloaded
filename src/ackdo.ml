@@ -26,7 +26,7 @@ let command =
         end
         with _exn -> begin
             match _exn with
-            | Ackdo_lib.Unimplemented msg -> printf "%s\n" msg
+            | Unimplemented msg -> printf "%s\n" msg
             | _exn -> E.handle_exn _exn
           end
       )

@@ -162,9 +162,7 @@ module Diff = struct
   let diff s1 s2 = 
     let lcs = longest_common_subsequence s1 s2 in
     (split_lcs s1 lcs, split_lcs s2 lcs)
-
 end
-
 
 module Printers = struct
   let no_color = object
@@ -197,7 +195,6 @@ module Printers = struct
   let get_printer ~color = if color then _c else no_color
 end
 
-
 let preview_changes change_sets ~color =
   let printer = Printers.get_printer ~color in
   change_sets |> List.iter ~f:(fun {path; changes} ->
@@ -209,4 +206,3 @@ let preview_changes change_sets ~color =
       end)
 
 let write_changes change_sets = change_sets |> List.iter ~f:write_change_set
-
