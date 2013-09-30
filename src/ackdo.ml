@@ -24,7 +24,11 @@ let command =
           if commit then Ackdo_lib.write_changes change_sets
           else Ackdo_lib.preview_changes change_sets ~color:(not color)
         end
-        with _exn -> E.handle_exn _exn
+        with _exn -> begin
+            match _exn with
+            | Ackdo_lib.Unimplemented msg -> printf "%s\n" msg
+            | _exn -> E.handle_exn _exn
+          end
       )
 
 let () = Exn.handle_uncaught ~exit:true (fun () -> Command.run command)

@@ -1,3 +1,4 @@
+exception Unimplemented of string with sexp
 
 type input = {
   file : string;

@@ -1,5 +1,6 @@
 open Core.Std
 open Textutils.Std
+exception Unimplemented of string with sexp
 
 type input = {
   file : string;
@@ -42,9 +43,9 @@ end
 
 (* Grouped inuput is not used very often so it's not currently supported *)
 
-let detect_input input = Ungrouped (* TODO *)
+let detect_input _ = raise (Unimplemented "grouped input not supported")
 
-let input_grouped input = failwith "TODO"
+let input_grouped _ = raise (Unimplemented "grouped input not supported")
 
 let group_remove l ~f = 
   match List.group l ~break:(fun _ x -> f x) with
